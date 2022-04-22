@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!--
+  Template path : /Accounting/AccInterface.html
+  Author :Punam
+  Purpose :
+  Referred Program :
+  Folder No. : 2
+  Page No. : 1
+  -->
+
+<meta http-equiv="Pragma" content="no-cache">
+<title>|^Accounting Interface^|</title>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;"  charset="UTF-8">
+<LINK rel="stylesheet" type="text/css" href="/EngDev/GenScripts94/Def.css">
+<script language="JavaScript" src="/EngDev/GenScripts94/calendar.js"></script>
+<script language="JavaScript" src="/EngDev/GenScripts94/settings.js"></script>	
+<script language="javascript" src="/EngDev/GenScripts94/GenFunctions.js"></script>
+<script language="JavaScript" src="/EngDev/GenScripts94/DateFunctions.js"></script>
+<script language="javascript">
+<!-- Confirmation For Clear Button -->
+var Folder_No = 2;
+var Page_No = 1;
+function check_form()
+{ 
+	with(document.forms[0])
+	{
+		if(JournalType.value=='D' || JournalType.value=='F' || JournalType.value=='J')
+		{
+			NewWin('/Magic94Scripts/mgrqispi94.dll?appname=RentProWeb&prgName=AccInterfaceProceed&Arguments=-A'+JournalType.value,'AccntInterface','AccntInterface','left=60,top=90,HEIGHT=500,WIDTH=850,scrollbars=1,resizable=1');
+		}
+
+	}
+}
+
+function MessageWindow()
+{
+	 document.forms[0].ProcessWindowNo.value=1;
+	 Process=open("/EngDev/Process.html", "PleaseWait", "left=200,top=250,width=267,height=103");
+}
+
+function MessageWindowClose()
+{
+if(document.forms[0].ProcessWindowNo.value==1)
+{
+	 Process.close();
+}
+return true;
+}
+
+
+function Clearfun()
+{
+  with(document.forms[0])
+	{
+	 
+    JournalType.value='D';
+   
+	}
+}
+		
+		function ClearValue()
+		{
+		 with(document.forms[0])
+		 {
+		// transfer.value='';
+		 }
+		}
+
+</script>
+</head>
+<body   onload="fullscreen();"  onUnload="javascript:MessageWindowClose()">
+<form action="/Magic94Scripts/mgrqispi94.dll" method="post" name="myform">
+	<input type=hidden name="AppName" value="RentProWeb">
+	<input type=hidden name="PrgName" value="AccInterfaceProceed">
+	<input type=hidden name="Arguments" value="JournalType">
+	<INPUT type="hidden" name="CalledFrom" value="" >
+	<INPUT type="hidden" name="ProcessWindowNo" value="">
+	<INPUT type="hidden" name="Process" value="" >
+
+	
+	
+<TABLE border=0 cellPadding=0 cellSpacing=0 width="60%" align="center">
+<tr>
+    <td valign="top" class="LeftCorner">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td width="100%"valign="middle" class="MainHeader">|^Accounting Interface^|</td>
+    <td valign="middle" class="MainHeader">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>								
+</tr>	
+<tr>
+    <td valign="top" class="LeftBorder"><!--DWLayoutEmptyCell-->&nbsp;</td>				
+    <td  width="100%">
+        <!-- Every thing goes in this block -->
+        <table class="Tablebox"  width="100%" border=0 cellPadding=0 cellSpacing=0><!-- Main Table -->
+       
+        <tr>
+            <td>
+            <table border="0" width="100%"  class="box" id="box" border=1 cellPadding=0 cellSpacing=0>
+						<col width = "20%"/>
+						<col width = "80%"/>
+					
+           
+          
+							 <tr height="50%">
+                <td>|^Export^|</td>
+                <td >
+									<select name="JournalType"  value="" class="textInputField_CmbLG" onchange="ClearValue()">Debitors,Fixed Assets,Journals
+                <option value="D">Debitors</option>
+                <option value="F">Fixed Assets</option> 
+								<option value="J">Journals</option>
+							
+                </select>
+        				</td>		
+            </tr>
+						
+						
+                        
+          </table>
+        </td>
+        </tr>
+        <tr>
+        <td>
+            <table summary=""  width="100%" border=0 cellPadding=0 cellSpacing=0 class="box">
+            <tr>
+            <td align="right">                	
+                <input type="button" class="buttonMdTp3" name="Proceed_BT" value="|^Proceed^|" onclick="check_form()">               
+								<INPUT type="button"  class="buttonMdTp3" name="Close_BT" value="|^Clear^|" onclick="Clearfun()">               
+            </td>
+            </tr>
+            </table>
+        </td>
+        </tr>
+        </table>
+    </td>
+    <td valign="top" class="RightBorder"><!--DWLayoutEmptyCell-->&nbsp;</td>							
+</TR>
+<tr>
+    <td valign="top" class="BottomLeftCorner"></td>
+    <td valign="top" class="BottomBorder"></td>
+    <td valign="top" class="BottomRightCorner"></td>      
+</tr>
+</TABLE>
+
+</form>
+</body>
+</html>
+
