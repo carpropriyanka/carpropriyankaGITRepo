@@ -1,0 +1,523 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<meta http-equiv="Pragma" content="no-cache">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso8859-1">
+<title>Login</title>
+<LINK rel="stylesheet" type="text/css" href="/EngDev/GenScripts94/qa.css">
+<link href="/EngDev/GenScripts94/Rentpro10.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="/EngDev/GenScripts94/settings.js"></script>
+<style type="text/css">
+<!--
+.style1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: italic;
+	font-weight: bold;
+	font-size: 24px;
+	color: #FFFFFF;
+}
+-->
+</style>
+
+<script language="javascript" src="/EngDev/GenScripts94/GenFunctions.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+var MainWin;
+if (document.all){	 	
+	document.onkeydown = function (){
+	        var key_f5 = 116; // 116 = F5		
+	         	
+		if (key_f5==event.keyCode)
+		{
+//			  if(MainWin)
+	//			 {
+				  					event.keyCode=0;
+										return false;
+		//		 }
+		}
+		else if(event.keyCode==8)//8 for back button
+		{
+			// 					event.keyCode=0;
+				//				return false;
+		}
+	}
+}
+function init()
+{ delCookie('UserName','/',null);
+delCookie('Company','/',null);
+delCookie('Customer_ID','/',null);
+delCookie('RANGE_DEBITOR','/',null);
+delCookie('RANGE_SUPPLIER','/',null);
+delCookie('UserBranchCode','/',null);
+}
+
+function CloseMainWin()
+{
+	  if(MainWin)
+				 {
+//				 MainWin.close();
+		}
+}
+
+function clearform()
+{
+ 		with(document.forms[0])
+		{
+		 var i=Branch.length;
+			for(;i>=0;i--)
+							Branch.remove(i);
+	ReTypePass.value='';
+	    NewPass.value='';
+			if(MultiDatabase=='Y')
+				Company.value='';
+			Pass.value='';
+			User.value='';
+//Web client - NKR Modification 48/965			
+			i=EmpDebitor.length;
+			for(;i>=0;i--){
+				EmpDebitor.remove(i);
+			}
+				
+			document.getElementById("EmpDebitorId").style.display="none";	
+		}
+}
+
+function GetDay(nDay)
+{
+	var Days = new Array("Sunday","Monday","Tuesday","Wednesday",
+	                     "Thursday","Friday","Saturday");
+	return Days[nDay]
+}
+
+function GetMonth(nMonth)
+{
+	var Months = new Array("January","February","March","April","May","June",
+	                       "July","August","September","October","November","December");
+	return Months[nMonth]
+}
+
+function DateString()
+{
+	var Today = new Date();
+	var suffix = "th";
+	switch (Today.getDate())
+	{
+		case 1:
+		case 21:
+		case 31:
+			suffix = "st"; break;
+		case 2:
+		case 22:
+			suffix = "nd"; break;
+		case 3:
+		case 23:
+			suffix = "rd"; break;
+	};
+
+	var strDate = GetDay(Today.getDay()) + " " + Today.getDate()
+	strDate += suffix + " " + GetMonth(Today.getMonth()) + ", " + Today.getYear()
+	document.forms[0].DateStr.value = strDate ;
+		document.forms[0].DateStr1.value = strDate ;
+}
+function Cursor(checkdis)
+{
+ 		with(document.forms[0])
+		{
+		
+			document.all.Z1.style.display="None";
+document.all.UserLogOut.style.display="None";
+						setDefaults();
+						var i=Branch.length;
+						for(;i>=0;i--)
+								Branch.remove(i);
+			 				User.focus();
+						Company.options[0].text='                                   ';
+						PasswordChange.value=0;
+						if(MultiDatabase=='Y')
+								document.all.CompanyShow.style.display="";
+						else
+							document.all.CompanyShow.style.display="None";
+							
+//Web client - NKR Modification 48/965							
+						i=EmpDebitor.length;
+      			for(;i>=0;i--){
+      				EmpDebitor.remove(i);
+      			}	
+							
+							if(FromLogOff.value=='1')
+							{
+							init();
+							document.all.UserLogOut.style.display='';
+							}
+						
+						document.getElementById("EmpDebitorId").style.display="none";
+						
+		}
+}
+
+function ChangePassword()
+{
+  with(document.forms[0])
+	{
+	 if(PasswordChange.value==0)
+	 {
+	    PasswordChange.value=1;
+      document.all.Z1.style.display='';
+			NewPass.focus();
+	 }
+	 else
+	 {
+	 PasswordChange.value=0;
+      document.all.Z1.style.display='None';
+	 }
+ }
+}
+function CallMultipleBranches()
+{
+ with(document.forms[0])
+ {
+ 			var i=Branch.length;
+			for(;i>=0;i--)
+			Branch.remove(i);
+
+//Web client - NKR Modification 48/965			
+			i=EmpDebitor.length;
+			for(;i>=0;i--){
+				EmpDebitor.remove(i);
+			}
+						
+				 if(User.value!=='' && Company.value!='' && Pass.value!=''){
+				 		 	var loc="/Magic94Scripts/mgrqispi94.dll?APPNAME=RentProWeb&PRGNAME=MultipleBranchesCombo&ARGUMENTS=-A"+User.value+',-A'+Company.value+',-A'+Database.value;
+	 				document.all.frm_page.src=loc;
+		}
+	}
+}
+function check_form()
+{ 
+ with(document.forms[0])
+ {
+ 	 if(PasswordChange.value==0)
+	 {
+	   if(!(NotEmptyField(Company.value)))     //for must fields: field is not " " , not "0"
+      {
+         alert("Please choose a Database name");
+				 		 Company.focus();
+         return false;
+      }
+  	if(!(NotEmptyField(User.value)))     //for must fields: field is not " " , not "0"
+      {
+         alert("Invalid login. Please specify valid access details");
+				 		 User.focus();
+         return false;
+      }    
+					if(!(NotEmptyField(Branch.value)))     //for must fields: field is not " " , not "0"
+      {
+         alert("Please specify valid access details");
+				 	 Branch.focus();
+         return false;
+      }    
+			
+//		NewWin('/Magic94Scripts/mgrqispi94.dll?appname=RentProWeb&prgName=NewLogin&Arguments=-A'+Company.value+',-A'+User.value+',-A'+Pass.value+',-A'+DUMMY.value+',-A'+Database.value+',-A'+Branch.value,'MainWin','RentproV10Menu','left=0,top=0,HEIGHT='+screen.height+',WIDTH='+(screen.width-2)+',scrollbars=1,status=1,title=yes,resizable =1');
+FromInvalid.value=1;
+//20111012 :
+	 		/* 	var loc="/Magic94Scripts/mgrqispi94.dll?APPNAME=RentProWeb&PRGNAME=OnlyFromNewLogin&ARGUMENTS=-A"+Company.value+',-A'+User.value+',-A'+Pass.value+',-A,-A'+Branch.value+',-A'+EmpDebitor.value;
+				document.all.frm_page.src=loc; */
+				submit();
+
+//	MainWin=window.open('/Magic94Scripts/mgrqispi94.dll?appname=RentProWeb&prgName=NewLogin&Arguments=-A'+Company.value+',-A'+User.value+',-A'+Pass.value+',-A'+DUMMY.value+',-A'+Database.value+',-A'+Branch.value,'RentproV10Menu','left=0,top=0,HEIGHT='+screen.height+',WIDTH='+(screen.width-2)+',scrollbars=1,status=1,title=yes,resizable =1')	
+		}
+		else//for Password Changing
+		{
+				 if(!(NotEmptyField(Company.value)))     //for must fields: field is not " " , not "0"
+    		   {
+					          alert("Please choose a company name");
+										Company.focus();
+										return false;
+					 }
+				 if(!(NotEmptyField(User.value)))     //for must fields: field is not " " , not "0"
+				   {
+					          alert("Invalid login. Please specify valid access details");
+										User.focus();
+										return false;
+					 }
+					 if(NewPass.value!==ReTypePass.value)
+					 {
+					          alert("Please retype the password in the 'Retype Password' field exactly as it was typed in the 'New Password' field.");
+										ReTypePass.select();
+										ReTypePass.focus();
+										return false;
+					 	 }
+					if(	 NewPass.value=='' || ReTypePass.value=='')
+					{
+					         alert("Please enter new password");
+									 NewPass.select();
+									 NewPass.focus();
+  			  				 return false;									 
+					}
+			  	var loc="/Magic94Scripts/mgrqispi94.dll?APPNAME=RentProWeb&PRGNAME=ChangePassword&ARGUMENTS=-A"+User.value+',-A'+Pass.value+',-A'+NewPass.value;
+	 				document.all.frm_page.src=loc;
+					PasswordChange.value=1;
+					ChangePassword();
+		 }
+  }
+}
+function FormSubmit()//After Checking All Errors & Password Validations
+{
+with(document.forms[0])
+ {
+FromInvalid.value=1;
+//20111012 : 
+ //MainWin=window.open('/Magic94Scripts/mgrqispi94.dll?appname=RentProWeb&prgName=NewLogin&Arguments=-A'+Company.value+',-A'+User.value+',-A'+Pass.value+',-A'+DUMMY.value+',-A'+Database.value+',-A'+Branch.value+',-A,-A'+EmpDebitor.value,'RentproV10Menu','left=0,top=0,HEIGHT='+screen.height+',WIDTH='+(screen.width-2)+',scrollbars=1,status=1,title=yes,resizable =1')
+ submit();
+		MessageWindow();
+}
+}
+function MessageWindow()
+{
+	 document.forms[0].ProcessWindowNo.value=1;
+	 Process=open("/Process.html", "PleaseWait", "left=200,top=250,width=267,height=103");
+}
+function MessageWindowClose()
+{
+if(document.forms[0].ProcessWindowNo.value==1)
+{
+	 Process.close();
+}
+}
+//-->
+</script>
+
+</HEAD>
+
+<!--<body onload="Cursor();DateString();if(opener && document.forms[0].FromLogOff.value!=1 && document.forms[0].FromInvalid.value!=1 ){window.opener.opener=''; window.opener.close()}" onunload="javascript:CloseMainWin();MessageWindowClose()"   >  -->
+<body onload="Cursor();DateString();if(opener && document.forms[0].FromLogOff.value!=1 && document.forms[0].FromInvalid.value!=1 ){opener.winClose();}" onunload="javascript:CloseMainWin();MessageWindowClose()">
+
+<form name=formi method="post" action="/Magic94Scripts/mgrqispi94.dll"  align="center">
+	<input type="hidden" name="APPNAME" value="RentProWeb">
+	<input type="hidden" name="PRGNAME" value="NewLogin">
+	<input type="hidden" name="ARGUMENTS" value="Company,User,Pass,DUMMY,Database,Branch,,EmpDebitor">
+	<input type="hidden" name="Database" value="MSSQL">
+	<input type="hidden" name="PasswordChange" value="0">
+	<input type="hidden" name="DUMMY" value="">
+	<input type="hidden" name="FromInvalid" value="">
+	<input type="hidden" name="FromLogOff" value="<!$MG_FromLogOff>"><!-- Value=1 If From Logoff-->
+  <INPUT type="hidden" name="ProcessWindowNo" value="">
+	<INPUT type="hidden" name="EmpDebitorExists" value="">
+<center>
+
+
+<table width="960" border="0" cellpadding="0" cellspacing="0">
+  <!--DWLayoutTable-->
+  <tr>
+    <td width="133" rowspan="2" align="center" valign="middle" background="/EngDev/Images94/topBar/customer_logo_bg.jpg"><img src="/EngDev/Images94/customer_logo.gif" width="71" height="30"></td>
+    <td width="513" rowspan="2" align="center" valign="middle" background="/EngDev/Images94/topBar/top_bar_bg.jpg" style="background-repeat:repeat-x "><span class="style1">RentPro Branch Management </span></td>
+    <td width="18" height="25" valign="top" background="/EngDev/Images94/topBar/top_bar_bg.jpg" style="background-repeat:repeat-x "><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td width="58" align="center" valign="bottom" class="topBarLinks"></td>
+    <td width="58" align="center" valign="bottom" class="topBarLinks"><a HREF="mailto:support@carprosystems.com">Help</a></td>
+    <td width="58" align="center" valign="bottom" class="topBarLinks"><a HREF="/EngDev/Aboutus/aboutus.htm"  target="_new"  >About Us</a></td>
+    <td width="141" align="right" valign="middle"  background="/EngDev/Images94/topBar/top_bar_bg.jpg" class="carProLogo" style="background-repeat:repeat-x ">&nbsp; Powered By &nbsp; <img src="/EngDev/Images94/topBar/carpro_logo.jpg" width="50" height="19" align="absmiddle">&nbsp; &nbsp; </td>
+  <td width="16" valign="top"><img src="/EngDev/Images94/topBar/top_bar_right_corner.jpg" width="16" height="25"></td>
+  </tr>
+  <tr>
+    <td height="25" valign="top"><img src="/EngDev/Images94/topBar/top_bar_date_corner.jpg" width="18" height="25"></td>
+    <td colspan="5" align="left" valign="middle" background="/EngDev/Images94/topBar/top_bar_date_frame.jpg" style="background-repeat:repeat-x " nowrap> &nbsp;<font class="topBarDate"></font> 
+<input type="text" value="" name="DateStr" readonly class="topBarDate" size="30"> &nbsp;</td>
+  </tr>
+</table>
+<div id="UserLogOut"  style="display=none">
+<table width="960" border="0" cellpadding="0" cellspacing="0">
+  <!--DWLayoutTable-->
+  <tr>
+	  <td height="25" valign="top"></td>
+    <td  align="left" colspan="5" valign="middle" background="/EngDev/Images94/topBar/top_bar_date_frame.jpg" style="background-repeat:repeat-x " nowrap> &nbsp;<font class="topBarDate">
+		<!--input type="text"  name="LastUserName" readonly class="topBarDate" size="10" align="right" value="<!$MG_LastUser>" tabindex="-1"-->
+		<!$MG_LastUser>&nbsp;
+		successfully logged out at  &nbsp;
+		  <input type="text" value="<!$MG_Time>" name="topBarLogOutTime" readonly class="topBarDate" size="04" style="text-align:left" tabindex="-1"> &nbsp;on
+  <input type="text" value="" name="DateStr1" readonly class="topBarDate" size="30" style="text-align:left" tabindex="-1"></font> &nbsp;</td>
+  </tr>
+</table>
+</div>
+<br><br>
+<table width="400" border="0" cellpadding="0" cellspacing="0">
+  <!--DWLayoutTable-->
+  <tr>
+    <td width="18" height="39" valign="top" ><img src="/EngDev/Images94/mainWindow/window_top_left_corner.jpg" width="18" height="39"></td>
+    <td align="center"  width="90%" valign="middle" background="/EngDev/Images94/mainWindow/window_header_bg.jpg" class="windowHeader" nowrap>&nbsp;Welcome to RentPro Branch Management&nbsp; </td>
+ 	  <td colspan="3" align="right" valign="middle" background="/EngDev/Images94/mainWindow/window_header_bg.jpg" class="windowRightHeader"> <img src="/EngDev/Images94/mainWindow/window_header_right.jpg" width="9" height="39" align="absmiddle"></td>
+  </tr>
+  <tr>
+    <td rowspan="4" valign="top" background="/EngDev/Images94/mainWindow/window_left_border.jpg"><!--DWLayoutEmptyCell-->&nbsp;</td>
+		<td height="24" colspan="3" valign="top" >
+	
+	<table border="0" class="qAccessCriteria" cellpadding="0" cellspacing="0" width="100%" >
+		<tr><td>
+				  <table border=0 cellspacing=3 cellpadding=5 width="100%">
+    	
+    			 <tr>
+					 		 		<td width="10%">&nbsp;&nbsp;&nbsp;</td>
+					 		   <td class="windowHeader" >Please specify the following</td>
+           </tr>
+      </table>
+    
+			
+	   </td></tr>
+ 	   </table>
+    </td>
+    <td width="18" rowspan="4" valign="top" background="/EngDev/Images94/mainWindow/window_right_border.jpg"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    </tr>
+
+  <tr>
+   <TD colspan=3>
+		<table border="0"  class="qAccessDetails" cellpadding="0" cellspacing="0" width="100%">
+		<tr>
+		   <td >
+					<table border=0 cellspacing=3 cellpadding=5 width="100%">
+            <tr>
+								<td width="10%"></td>
+					      <td class="LableHeader"  width="40%"><B>User Name&nbsp;</B></td>
+								<td width="50%"><input type="text" name="User" size="20" maxlength="10" style="font-size: 8pt;" onchange="CallMultipleBranches()" class="textInputField"></td>
+					  </tr>
+					  <tr>
+								<td width="10%"></td>
+						    <td class="LableHeader"  width="40%"><B>Password&nbsp;</B></td>
+								<td width="50%"><input type="Password" name="Pass" size="20" maxlength="16" class="textInputField" onchange="CallMultipleBranches()" onfocus="this.select();"></td>
+				  </tr>
+					<tr><td colspan="3">
+		  		<SPAN id="CompanyShow"  style="display=None">
+		  		<table border=0 cellspacing=0 cellpadding=5 width="100%">
+    			 <tr>
+					  	 	 <TD width="10%"></TD>
+					 		   <td class="LableHeader" width="40%" ><B>Database&nbsp;</B></td>
+								 <td width="50%">&nbsp;<SELECT NAME="Company" onchange="CallMultipleBranches()">
+								 					 <option value="">Please select DB </option>
+								
+ <option value="BelhasaLive_20211207"  >BelhasaLive_20211207</OPTION>
+  <option value="UAT2_20170410"  >UAT2_20170410</OPTION>
+    <option value="UAT2_20170413" selected >UAT2_20170413</OPTION>
+	 <option value="UAT2_20170410_QA" selected >UAT2_20170410_QA</OPTION>
+	 	 <option value="ALTAYYARLIVE_20170113" selected >ALTAYYARLIVE_20170113</OPTION>
+		 <option value="OrixLive_20170425" selected >OrixLive_20170425</OPTION>
+		<option value="AutomakUpgradeLive_20170306" selected >AutomakUpgradeLive_20170306</OPTION>											 
+		<option value="OrixLive_20170515" selected >OrixLive_20170515</OPTION>											 
+		<option value="OrixLive_20170519" selected >OrixLive_20170519</OPTION>	
+		<option value="MPM_Live_20170306" selected >MPM_Live_20170306</OPTION>		
+		<option value="TheebLive_20161106" selected >TheebLive_20161106</OPTION>		
+		<option value="Hertz_DubaiQA_1" selected >Hertz_DubaiQA_1</OPTION>		
+		<option value="ALTAYYARLIVE_20180216" selected >ALTAYYARLIVE_20180216</OPTION>		
+		<option value="ASAP_LIVE_20190527" selected >ASAP_LIVE_20190527</OPTION>	
+<option value="HERTZ_ORCL_UPDATED_QA" selected >HERTZ_ORCL_UPDATED_QA</OPTION>			
+<option value="ThriftyOman_Upgrade" selected >ThriftyOman_Upgrade</OPTION>			
+<option value="HERTZKSA_Live_20190130" selected >HERTZKSA_Live_20190130</OPTION>			
+<option value="HertzKSATest_20190214" selected >HertzKSATest_20190214</OPTION>			
+<option value="PrestigeQatarLive_20181223_QA" selected >PrestigeQatarLive_20181223_QA</OPTION>			
+<option value="PrestigeQatar_20181223_QA" selected >PrestigeQatar_20181223_QA</OPTION>			
+<option value="Oway_Myanmar" selected >Oway_Myanmar</OPTION>			
+<option value="Oway_Myanmar_QA" selected >Oway_Myanmar_QA</OPTION>			
+<option value="StrongRAC_TEST_20190304" selected >StrongRAC_TEST_20190304</OPTION>			
+<option value="Thai_RentCar" selected >Thai_RentCar</OPTION>			
+<option value="TheebLive_20190228" selected >TheebLive_20190228</OPTION>			
+<option value="HertzKSATest_20190214" selected >HertzKSATest_20190214</OPTION>			
+<option value="StrongRAC_TEST_20190320" selected >StrongRAC_TEST_20190320</OPTION>			
+<option value="TRAC_LIVE_20200716" selected >TRAC_LIVE_20200716</OPTION>			
+		
+<option value="Thrifty_SouthAfrica_QA" selected >Thrifty_SouthAfrica_QA</OPTION>
+<option value="Thrifty_SouthAfrica" selected >Thrifty_SouthAfrica</OPTION>				
+<option value="ALTAYYARLIVE_20200219" selected >ALTAYYARLIVE_20200219</OPTION>				
+			
+<option value="THEEBLIVE_20161106_QA" selected >THEEBLIVE_20161106_QA</OPTION>				
+<option value="AlyamLive_20201026" selected >AlyamLive_20201026</OPTION>				
+<option value="AutoRentTest_20200520" selected >AutoRentTest_20200520</OPTION>				
+<option value="HERTZKSA_Live_20220211" selected >HERTZKSA_Live_20220211</OPTION>				
+<option value="JaidahQatar_Live_20220324" selected >JaidahQatar_Live_20220324</OPTION>				
+<option value="Automak_Live_20200219" selected >Automak_Live_20200219</OPTION>				
+<option value="BudgetBahrainLive_20220407" selected >BudgetBahrainLive_20220407</OPTION>				
+			
+</tr>
+          </table>
+          </SPAN>
+			  
+					  
+			<tr style="display:none" id="EmpDebitorId">
+								<td width="10%"></td>
+						    <td class="LableHeader"  width="40%"  align="left"><B>Debitor&nbsp;</B></td>
+								<td width="50%" align="left"><select name="EmpDebitor" onchange="">
+								     								<option value="">Select Emp Debitor</option>
+
+
+																  	<!$MGREPEAT>
+																								     	<option value="<!$MG_EmpDebCode>"> <!$MG_EmpDebName>
+									 									<!$MGENDREPEAT>
+									           </select>
+	         				</td>
+   				</tr>					  
+					  
+						<tr>
+								<td width="10%"></td>
+						    <td class="LableHeader"  width="40%"><B>Branch&nbsp;</B></td>
+								<td width="50%"><select name="Branch" onchange="">
+								     								<option value="">Please select Br</option>
+																  	<!$MGREPEAT>
+																								     	<option value="<!$MG_BranchCode>"> <!$MG_BranchName>
+									 									<!$MGENDREPEAT>
+									           </select>
+	         				</td>
+    				</tr>
+				 </table>
+		   </td>
+	  </tr>
+   </table>
+	 </td>
+	 </tr>
+	 <TR><TD colspan="3">
+	 <SPAN id="Z1"  style="display=None">
+	 <TABLE border=0 cellspacing=3 cellpadding=5 width="100%" class="qAccessDetails">
+	 <TR><td width="10%"></td>
+        <TD class="windowHeader" colspan=3 >To change your password, please specify</TD>
+	  </TR>
+    <TR><td width="10%"></td>
+        <TD class="LableHeader"  width="40%" nowrap>New Password</TD>
+	      <td width="50%"><input type="Password" name="NewPass" size="20" maxlength="16" style="font-size: 8pt;" class="textInputField" onfocus="this.select();"></td>
+    </TR>
+    <TR><td width="10%"></td>
+        <TD class="LableHeader" width="40%" nowrap>Retype Password</TD>
+	      <td width="50%"><input type="Password" name="ReTypePass" size="20" maxlength="16" class="textInputField" s" onfocus="this.select();"></td>
+    </TR>
+		</TABLE>
+		</SPAN>
+		</td></tr>
+		<tr><td nowrap background="/EngDev/Images94/QuickAccess/light_blue_bg.jpg" colspan="3"  align="center"  >
+		
+	<input type="button" class="buttonGeneral" name="ChangePassword_Btn" value="Change Password" onclick="ChangePassword()">
+	<input type="button" class="button" name="Ok_Btn" value="OK" onclick="check_form()">
+	<input type="button" class="button" name="Clear_Btn" value="Clear" onclick="clearform()">	
+	</td></tr>
+
+				 <tr>
+    <td height="18" valign="top"><img src="/EngDev/Images94/mainWindow/window_bottom_left_corner.jpg" width="18" height="18"></td>
+    <td colspan="3" valign="top" background="/EngDev/Images94/mainWindow/window_bottom_border.jpg"><!--DWLayoutEmptyCell-->&nbsp;</td>
+    <td valign="top"><img src="/EngDev/Images94/mainWindow/window_bottom_right_corner.jpg" width="18" height="18"></td>
+  </tr>
+  <tr>
+    <td height="1"></td>
+    <td></td>
+    <td width="258"></td>
+    <td></td>
+  </tr>
+
+</table> 
+<script for =document event=oncontextmenu>
+<!--
+return false;
+//-->
+</script>
+
+
+
+
+<IFRAME src="blank.htm" name="frm_page" id="frm_page" width="0" height="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></IFRAME>
+
+</form>
+</body>
+</html>
